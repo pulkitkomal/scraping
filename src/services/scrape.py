@@ -12,12 +12,16 @@ class DiecastScraper:
         self.total_token_used = 0
         self.total_cost = 0
 
-    def scrape_diecast_info(self, website=None, link=None):
+    def scrape_diecast_info(self, bot, chat_id):
         for website, link in links_to_scrape.items():
+            bot.send_chat_action(chat_id, "typing")
             logger.info(f"{website} ---- {link}")
+            bot.send_message(chat_id, f"Scrapping {website} !!")
             smart_scraper = SmartScraper(source=link)
             try:
                 self.all_data[website] = smart_scraper.run().get("content")
+                bot.send_chat_action(chat_id, "typing")
+                bot.send_message(chat_id, f"Cars found for {website} {len(self.all_data[website])}")
             except:
                 continue
             for execution_stats in smart_scraper.get_execution_info():

@@ -20,7 +20,7 @@ def collect_info(message):
         ds = DiecastScraper()
         bot.send_message(message.chat.id, "Going through the web")
         bot.send_chat_action(message.chat.id, "typing")
-        tokens_used = ds.scrape_diecast_info()
+        tokens_used = ds.scrape_diecast_info(bot, message.chat.id)
         bot.send_message(message.chat.id, "Populating Database")
         bot.send_chat_action(message.chat.id, "typing")
         total_records = ds.write_to_mongo()
