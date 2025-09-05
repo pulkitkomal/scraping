@@ -19,13 +19,17 @@ def collect_info(message):
     try:
         ds = DiecastScraper()
         bot.send_message(message.chat.id, "Going through the web")
+        bot.send_chat_action(message.chat.id, "typing")
         tokens_used = ds.scrape_diecast_info()
         bot.send_message(message.chat.id, "Populating Database")
+        bot.send_chat_action(message.chat.id, "typing")
         total_records = ds.write_to_mongo()
         status = f"Collected new info for {len(total_records)} cars, total tokens used: {tokens_used['total_token_used']}, total cost: {tokens_used['total_cost']}"
         if not total_records:
+            bot.send_chat_action(message.chat.id, "typing")
             bot.send_message(message.chat.id, "No new cars !!")
         for cars in total_records:
+            bot.send_chat_action(message.chat.id, "typing")
             bot.send_message(message.chat.id, f"{cars['website']} -- {cars['car_name']}")
 
     except Exception as e:
@@ -43,8 +47,10 @@ def collect_info(message):
         logger.exception(f"Error: {e}")
         cars = (f"Error: {e}", None)
     if not cars:
+        bot.send_chat_action(message.chat.id, "typing")
         bot.send_message(message.chat.id, "No new cars !!")
     for car, website in cars:
+        bot.send_chat_action(message.chat.id, "typing")
         bot.send_message(message.chat.id, f"{website} -- {car}")
 
 
@@ -55,6 +61,7 @@ def echo_all(message):
     if 'find: ' in message.text:
         cars = message.text.split(' ')
         for input_car in cars[1:]:
+            bot.send_chat_action(message.chat.id, "typing")
             bot.send_message(message.chat.id, f"Looking up car {input_car}")
             car_names = mongo.read_individual_car_diecast(name=input_car, minutes=60)
             if not car_names:
